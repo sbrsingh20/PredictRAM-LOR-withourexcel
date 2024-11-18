@@ -6,13 +6,6 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from datetime import date
 
-# Load candidates
-candidates_file = 'candidates.xlsx'  # Update this path as necessary
-candidates_df = pd.read_excel(candidates_file)
-
-# Check for leading/trailing spaces in column names
-candidates_df.columns = candidates_df.columns.str.strip()
-
 # Function to generate letter of recommendation
 def generate_lor(name, start_date, end_date):
     pdf_file = f"LOR_{name}.pdf"
@@ -75,7 +68,7 @@ def generate_lor(name, start_date, end_date):
 
 # Streamlit App
 
- # Add a logo to the top header
+# Add a logo to the top header
 st.image("png_2.3-removebg-preview.png", width=400)  # Replace "your_logo.png" with the path to your logo
 st.title("Letter of Recommendation Generator")
 
@@ -88,21 +81,15 @@ with st.form("lor_form"):
     end_date = st.date_input("End Date")
     submit_button = st.form_submit_button(label="Generate LOR")
 
-# Check if the candidate is in the list
+# Generate LOR PDF without candidate validation
 if submit_button:
-    if 'Candidate Name' in candidates_df.columns:
-        if name in candidates_df['Candidate Name'].values:
-            # Generate LOR PDF
-            pdf_file = generate_lor(name, start_date, end_date)
-            
-            with open(pdf_file, "rb") as file:
-                st.download_button(
-                    label="Download LOR",
-                    data=file,
-                    file_name=pdf_file,
-                    mime="application/pdf"
-                )
-        else:
-            st.error("Candidate not found in the list.")
-    else:
-        st.error("'Candidate Name' column not found in the candidates file.")
+    # Generate LOR PDF
+    pdf_file = generate_lor(name, start_date, end_date)
+    
+    with open(pdf_file, "rb") as file:
+        st.download_button(
+            label="Download LOR",
+            data=file,
+            file_name=pdf_file,
+            mime="application/pdf"
+        )
